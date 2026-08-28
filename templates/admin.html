@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - Complaint Portal{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <h5 class="fw-bold mb-0 text-primary"><i class="bi bi-kanban me-2"></i>All Institution Complaints</h5>
+        <span class="badge bg-primary fs-6">{{ complaints|length }} Total</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Student</th>
+                        <th>Complaint Details</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in complaints %}
+                    <tr>
+                        <td><strong>#{{ c.id }}</strong></td>
+                        <td>
+                            <div class="fw-semibold">{{ c.author.name if c.author else 'Unknown' }}</div>
+                            <small class="text-muted">{{ c.author.email if c.author else '' }}</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold">{{ c.title }}</div>
+                            <div class="text-muted small mb-1">{{ c.description }}</div>
+                            {% if c.image_file %}
+                                <a href="{{ url_for('static', filename='uploads/' + c.image_file) }}" target="_blank" class="badge bg-light text-primary border">View Attachment</a>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge bg-secondary">{{ c.category }}</span></td>
+                        <td>
+                            {% if c.status == 'Pending' %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif c.status == 'In Progress' %}
+                                <span class="badge bg-info text-dark">In Progress</span>
+                            {% elif c.status == 'Resolved' %}
+                                <span class="badge bg-success">Resolved</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_status', complaint_id=c.id) }}" class="d-flex gap-1">
+                                <select name="status" class="form-select form-select-sm" style="width: 130px;">
+                                    <option value="Pending" {% if c.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="In Progress" {% if c.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="Resolved" {% if c.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                    <option value="Rejected" {% if c.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-check-lg"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

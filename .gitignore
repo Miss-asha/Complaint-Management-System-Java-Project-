@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.env
+.venv/
+env/
+venv/
+*.db
+*.sqlite3
+instance/
+static/uploads/*
+!static/uploads/.gitkeep
+*.zip
+*.log
